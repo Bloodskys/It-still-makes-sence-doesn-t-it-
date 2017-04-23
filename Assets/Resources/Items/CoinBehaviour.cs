@@ -8,6 +8,7 @@ public class CoinBehaviour : MonoBehaviour
 {
     SpriteRenderer spriteRenderer;
     bool refreshing;
+    bool depleting;
     // Use this for initialization
     void Start()
     {
@@ -18,11 +19,26 @@ public class CoinBehaviour : MonoBehaviour
     {
         if (refreshing && spriteRenderer.color.a < 1)
         {
-            gameObject.SetActive(true);
             Color c = spriteRenderer.color;
-            c.a += Time.fixedDeltaTime;
+            c.a += Time.fixedDeltaTime * 2;
             spriteRenderer.color = c;
-            StartCoroutine(Wait(0.1f));
+            if (c.a >= 1)
+            {
+                refreshing = false;
+            }
+        }
+        else if (depleting && spriteRenderer.color.a > 0)
+        {
+            Color c = spriteRenderer.color;
+            c.a -= Time.fixedDeltaTime * 3;
+            spriteRenderer.gameObject.transform.localScale *= (1 + Time.fixedDeltaTime * 2);
+            spriteRenderer.color = c;
+            if (c.a <= 0)
+            {
+                depleting = false;
+                spriteRenderer.gameObject.transform.localScale = Vector3.one;
+                gameObject.SetActive(false);
+            }
         }
     }
     void OnTriggerEnter2D(Collider2D collider)
@@ -36,20 +52,16 @@ public class CoinBehaviour : MonoBehaviour
     void RefreshCoin(object sender, EventArgs e)
     {
         gameObject.SetActive(true);
+        refreshing = true;
+        depleting = false;
     }
 
     void Pick()
     {
         Globals.Gold++;
         Globals.OnMapComplete += RefreshCoin;
-        /*Color c = spriteRenderer.color;
-        while (spriteRenderer.color.a > 0)
-        {
-            c.a -= Time.deltaTime;
-            spriteRenderer.color = c;
-        }*/
-        gameObject.SetActive(false);
-        Debug.Log("Finish");
+        depleting = true;
+        refreshing = false;
     }
 
     IEnumerator Wait(float seconds)

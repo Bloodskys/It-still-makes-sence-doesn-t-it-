@@ -13,6 +13,12 @@ public class PlayerController : MonoBehaviour {
     private bool lastJumpState;
     private bool lastFallState;
     private bool lastCrouchState;
+    private Vector2 boxColliderOffset;
+    private Vector2 crouchBoxColliderOffset;
+    private Vector2 circleColliderOffset;
+    private Vector2 crouchCircleColliderOffset;
+    private float circleColliderRadius;
+    private float crouchCircleColliderRadius;
     private static GameObject player;
     private static GameObject ghost;
     public static GameObject Player
@@ -32,7 +38,14 @@ public class PlayerController : MonoBehaviour {
     }
     State state;
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
+        boxColliderOffset = GetComponent<BoxCollider2D>().offset;
+        crouchBoxColliderOffset = boxColliderOffset + new Vector2(0, -.4f);
+        circleColliderOffset = GetComponent<CircleCollider2D>().offset;
+        crouchCircleColliderOffset = circleColliderOffset + new Vector2(0, .19f);
+        circleColliderRadius = GetComponent<CircleCollider2D>().radius;
+        crouchCircleColliderRadius = circleColliderRadius - 0.1f;
         if (player == null)
         {
             player = gameObject;
@@ -48,7 +61,6 @@ public class PlayerController : MonoBehaviour {
             ghost.transform.position = ghostPos;
         }
     }
-	
 	// Update is called once per frame
 	void Update () {
 		
@@ -64,10 +76,16 @@ public class PlayerController : MonoBehaviour {
 		//Crouch 
         if (Input.GetKey(KeyCode.S))
         {
+            GetComponent<BoxCollider2D>().offset = crouchBoxColliderOffset;
+            GetComponent<CircleCollider2D>().offset = crouchCircleColliderOffset;
+            GetComponent<CircleCollider2D>().radius = crouchCircleColliderRadius;
             SetState(State.Crouch);
         }
         else
         {
+            GetComponent<BoxCollider2D>().offset = boxColliderOffset;
+            GetComponent<CircleCollider2D>().offset = circleColliderOffset;
+            GetComponent<CircleCollider2D>().radius = circleColliderRadius;
             #region Walk
             if (Mathf.Abs(move) > 0 && lastWalkState == false)
             {
@@ -120,7 +138,10 @@ public class PlayerController : MonoBehaviour {
         switch (state)
         {
             case State.Crouch:
-
+                anim.SetBool("Walk", false);
+                anim.SetBool("Jump", false);
+                anim.SetBool("Fall", false);
+                anim.SetBool("Crouch", true);
                 break;
             case State.Fall:
                 anim.SetBool("Walk", false);
@@ -158,5 +179,6 @@ public class PlayerController : MonoBehaviour {
     public static void Die()
     {
         player.transform.position = START_POS;
+        Globals.Instance.ShakeCam(0.2f);
     }
 }
