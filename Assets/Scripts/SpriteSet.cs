@@ -6,10 +6,7 @@ using UnityEngine;
 
 public class SpriteSet
 {
-    [SerializeField]
     public bool showInInspector;
-    [SerializeField]
     public string title;
-    [SerializeField]
     public Sprite[] sprites;
 }

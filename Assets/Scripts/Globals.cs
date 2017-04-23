@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Globals : MonoBehaviour {
@@ -8,6 +6,7 @@ public class Globals : MonoBehaviour {
     static int gold;
     public static EventHandler OnGoldAmountChanged;
     public static EventHandler OnMapComplete;
+    public static EventHandler OnChangeTileset;
     public static int Gold
     {
         get
@@ -36,9 +35,21 @@ public class Globals : MonoBehaviour {
         if (OnMapComplete != null)
         {
             OnMapComplete.Invoke(sender, e);
+            RaiseChangeTileset(sender, e);
         }
     }
-	void Start () {
+    public static void RaiseChangeTileset(object sender, EventArgs e)
+    {
+        TileEventArgs args = new TileEventArgs()
+        {
+            type = (TileEventArgs.TileSet)UnityEngine.Random.Range(0, 4)
+        };
+        if (OnChangeTileset != null)
+        {
+            OnChangeTileset.Invoke(sender, args);
+        }
+    }
+    void Start () {
         Gold = 0;
 	}
 }

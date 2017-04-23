@@ -6,14 +6,11 @@ using UnityEngine;
 
 public class CoinBehaviour : MonoBehaviour
 {
-
-    BoxCollider2D boxCollider;
     SpriteRenderer spriteRenderer;
     bool refreshing;
     // Use this for initialization
     void Start()
     {
-        boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

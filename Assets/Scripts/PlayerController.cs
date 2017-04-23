@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
     public float jumpForce;
     private Rigidbody2D rb;
     private Animator anim;
+    private static Vector3 START_POS = new Vector3(-11.2f, -1.08f, 0);
     private bool lastWalkState;
     private bool lastJumpState;
     private bool lastFallState;
@@ -54,7 +55,7 @@ public class PlayerController : MonoBehaviour {
 	}
     void FixedUpdate()
     {
-        float move = /*1f;//*/ Input.GetAxis("Horizontal");
+        float move = 1f;//*/ Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(move * speed, rb.velocity.y);
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -153,5 +154,9 @@ public class PlayerController : MonoBehaviour {
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+    public static void Die()
+    {
+        player.transform.position = START_POS;
     }
 }
