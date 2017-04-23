@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour {
     private bool lastJumpState;
     private bool lastFallState;
     private bool lastCrouchState;
+    private static GameObject player;
+    private static GameObject ghost;
     enum State
     {
         Idle,
@@ -23,9 +25,20 @@ public class PlayerController : MonoBehaviour {
     State state;
     // Use this for initialization
     void Start () {
+        if (player == null)
+        {
+            player = gameObject;
+        }
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         SetState(State.Idle);
+        if (ghost == null)
+        {
+            ghost = Instantiate(gameObject);
+            Vector3 ghostPos = player.transform.position;
+            ghostPos.x -= 24;
+            ghost.transform.position = ghostPos;
+        }
     }
 	
 	// Update is called once per frame
@@ -71,6 +84,26 @@ public class PlayerController : MonoBehaviour {
                 SetState(State.Idle);
             }
             #endregion
+        }
+
+        if (player.transform.position.x >= 11)
+        {
+            ghost.SetActive(true);
+            Vector3 ghostPos = player.transform.position;
+            ghostPos.x -= 24;
+            ghost.transform.position = ghostPos;
+            if (player.transform.position.x >= 12)
+            {
+                player.transform.position = ghost.transform.position;
+                ghostPos = player.transform.position;
+                ghostPos.x -= 24;
+                ghost.transform.position = ghostPos;
+                Globals.RaiseMapComplete(null, null);
+            }
+        }
+        else
+        {
+            ghost.SetActive(false);
         }
     }
 
