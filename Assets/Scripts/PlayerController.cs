@@ -14,6 +14,13 @@ public class PlayerController : MonoBehaviour {
     private bool lastCrouchState;
     private static GameObject player;
     private static GameObject ghost;
+    public static GameObject Player
+    {
+        get
+        {
+            return player;
+        }
+    }
     enum State
     {
         Idle,

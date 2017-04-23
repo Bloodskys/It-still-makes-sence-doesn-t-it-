@@ -10,12 +10,14 @@ public class BackgroundManager : MonoBehaviour {
     private int currentBG;
     private bool toTransparent;
     private int[] spriteValues;
+    private int bgAmount;
 	// Use this for initialization
 	void Start () {
+        bgAmount = sprites.Length;
         accumulator = 0;
         currentBG = 0;
         toTransparent = true;
-        spriteValues = new int[2] { 0, 1 };
+        spriteValues = new int[2] { 0, 4 };
 	}
 	
 	// Update is called once per frame
@@ -32,7 +34,7 @@ public class BackgroundManager : MonoBehaviour {
         if (accumulator >= pulseTime)
         {
             accumulator -= pulseTime;
-            spriteValues[currentBG] = (spriteValues[currentBG] + 1) % 4;
+            spriteValues[currentBG] = (spriteValues[currentBG] + 1) % bgAmount;
             backgrounds[currentBG].sprite = sprites[spriteValues[currentBG]];
             currentBG = ++currentBG % 2;
             toTransparent = !toTransparent;
